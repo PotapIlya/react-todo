@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Header from './components/blocks/header';
+import ListElement from './components/list-element';
+import Form from './components/form';
+
+
+export default () => {
+    const [tasks, setTasks] = useState([]);
+
+    const addTask = (val) => setTasks(prevTasks => [ ...prevTasks, val]);
+    const deleteTask = (idx) => setTasks(prevTasks => prevTasks.splice(idx));
+    const doneTask = (idx) => {
+        let prev =[...tasks]
+        prev[idx].isDone = true
+        setTasks(prev);
+    };
+
+    return (
+        <>
+            <Header/>
+            <main>
+                <Form addTask={addTask} />
+                { !!tasks.length &&
+                    <ul>
+                        { tasks.map(({title, isDone}, idx) => {
+                            return (
+                                <ListElement
+                                    key={idx}
+                                    idx={idx}
+                                    title={title}
+                                    isDone={isDone}
+
+                                    deleteTask={deleteTask}
+                                    doneTask={doneTask}
+                                />
+                            )}
+                        )}
+                    </ul>
+                }
+            </main>
+        </>
+    );
 }
-
-export default App;
